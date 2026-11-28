@@ -2,7 +2,7 @@
 
 Testing the agent on bugs engineers already triaged needs the engineer's answer
 hidden: nearly every such bug carries the calculator comment with its inputs.
-This wraps the broker's Bugzilla client so every tool sees the target bug, and
+This extends the broker's Bugzilla client so every tool sees the target bug, and
 any related bug, as of the moment triage began. Ported from perf-triage-validator's
 ``as_filed`` (harness/extract_run.py), which established the cutoff rule:
 
@@ -17,8 +17,13 @@ any related bug, as of the moment triage began. Ported from perf-triage-validato
 Enabled only when the broker is given ``BLIND_BUG_ID``.
 """
 
+import logging
 import re
-from typing import Any
+from typing import Any, Self
+
+from bugzilla_client import BugzillaClient, BugzillaSettings
+
+log = logging.getLogger(__name__)
 
 TRIAGE_RE = re.compile(r"perf-triage/calculator|Performance Impact Calculator", re.I)
 
@@ -95,31 +100,49 @@ def keep_comment(c: dict, cutoff: str, index: int) -> bool:
     return index == 0 or not TRIAGE_RE.search(c.get("text", ""))
 
 
-class BlindClient:
-    """A bugsy client whose responses stop at the target bug's triage cutoff."""
+class BlindClient(BugzillaClient):
+    """A Bugzilla client whose responses stop at the target bug's triage cutoff.
 
-    def __init__(self, client: Any, bug_id: int):
-        self._client = client
-        comments = client.request(f"bug/{bug_id}/comment")["bugs"][str(bug_id)][
-            "comments"
-        ]
-        self.cutoff = find_cutoff(self._history(bug_id), comments)
-        if self.cutoff is None:
-            raise ValueError(f"bug {bug_id} was never rated; nothing to hide")
+    Every resource method (``bugs.get``, ``comments.get``, ...) goes through
+    :meth:`request`, so filtering there covers them all. The cutoff is looked up
+    on ``async with``.
+    """
 
-    def __getattr__(self, name: str) -> Any:
-        return getattr(self._client, name)
+    cutoff: str
 
-    def _history(self, bug_id: int | str) -> list[dict]:
-        return self._client.request(f"bug/{bug_id}/history")["bugs"][0]["history"]
+    def __init__(self, settings: BugzillaSettings, bug_id: int):
+        super().__init__(settings)
+        self.bug_id = bug_id
 
-    def request(self, path: str, params: dict | None = None, **kw: Any) -> Any:
-        result = self._client.request(path, params=params or {}, **kw)
+    async def __aenter__(self) -> Self:
+        result = await super().request("GET", f"bug/{self.bug_id}/comment")
+        comments = result["bugs"][str(self.bug_id)]["comments"]
+        cutoff = find_cutoff(await self._history(self.bug_id), comments)
+        if cutoff is None:
+            raise ValueError(f"bug {self.bug_id} was never rated; nothing to hide")
+        self.cutoff = cutoff
+        log.warning("BLIND: bug %d served as of %s", self.bug_id, cutoff)
+        return self
+
+    async def _history(self, bug_id: int | str) -> list[dict]:
+        result = await super().request("GET", f"bug/{bug_id}/history")
+        return result["bugs"][0]["history"]
+
+    async def request(
+        self,
+        method: str,
+        path: str,
+        /,
+        *,
+        params: dict[str, Any] | None = None,
+        json: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        result = await super().request(method, path, params=params, json=json)
         if path == "bug":
             result["bugs"] = [
-                self._bug(b)
+                await self._bug(b)
                 for b in result.get("bugs", [])
-                if self._created(b) < self.cutoff
+                if await self._created(b) < self.cutoff
             ]
             return result
         if m := _ATTACHMENT_PATH.match(path):
@@ -151,15 +174,15 @@ class BlindClient:
             return result
         return result
 
-    def _created(self, bug: dict) -> str:
+    async def _created(self, bug: dict) -> str:
         if "creation_time" in bug or "id" not in bug:
             return bug.get("creation_time", "")
-        one = self._client.request(
-            "bug", params={"id": bug["id"], "include_fields": "creation_time"}
+        one = await super().request(
+            "GET", "bug", params={"id": bug["id"], "include_fields": "creation_time"}
         )
         return one["bugs"][0]["creation_time"]
 
-    def _bug(self, bug: dict) -> dict:
+    async def _bug(self, bug: dict) -> dict:
         if "id" not in bug:
             return bug
-        return roll_back(bug, self._history(bug["id"]), self.cutoff)
+        return roll_back(bug, await self._history(bug["id"]), self.cutoff)

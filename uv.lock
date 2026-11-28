@@ -2637,6 +2637,7 @@ name = "hackbot-agent-perf-triage"
 source = { editable = "agents/perf-triage" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla"] },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "mcp" },
@@ -2654,6 +2655,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla"], editable = "libs/agent-tools" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.1.30" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
