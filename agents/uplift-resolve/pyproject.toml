@@ -6,7 +6,7 @@ requires-python = ">=3.14"
 dependencies = [
     "hackbot-runtime[claude-sdk]",
     "agent-tools[bugzilla,searchfox,vcs]",
-    "bugsy",
+    "bugzilla-client",
     "claude-agent-sdk>=0.1.30",
     "mcp>=1.0.0",
     "phabricator-client",
@@ -25,6 +25,7 @@ test = [
 [tool.uv.sources]
 hackbot-runtime = { workspace = true }
 agent-tools = { workspace = true }
+bugzilla-client = { workspace = true }
 phabricator-client = { workspace = true }
 phabricator-proxy = { workspace = true }
 
