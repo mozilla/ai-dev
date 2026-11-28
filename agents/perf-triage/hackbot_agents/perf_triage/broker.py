@@ -10,11 +10,11 @@ import logging
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-import bugsy
 import uvicorn
 from agent_tools import bugzilla
 from agent_tools.bugzilla import BugzillaContext
 from agent_tools.claude_sdk import build_sdk_server
+from bugzilla_client import BugzillaClient, BugzillaSettings
 from hackbot_agents.perf_triage.blind import BlindClient
 from mcp.server.streamable_http_manager import (
     Receive,
@@ -42,12 +42,14 @@ class BrokerInputs(BaseSettings):
 
 
 def build_app(inputs: BrokerInputs) -> Starlette:
-    client = bugsy.Bugsy(
-        api_key=inputs.bugzilla_api_key, bugzilla_url=inputs.bugzilla_api_url
+    settings = BugzillaSettings(
+        api_url=inputs.bugzilla_api_url, api_key=inputs.bugzilla_api_key
     )
-    if inputs.blind_bug_id is not None:
-        client = BlindClient(client, inputs.blind_bug_id)
-        log.warning("BLIND: bug %d served as of %s", inputs.blind_bug_id, client.cutoff)
+    client = (
+        BugzillaClient(settings)
+        if inputs.blind_bug_id is None
+        else BlindClient(settings, inputs.blind_bug_id)
+    )
     ctx = BugzillaContext(client=client)
     sdk_config = build_sdk_server("bugzilla", ctx, bugzilla.TOOLS)
     mcp_server = sdk_config["instance"]
@@ -56,7 +58,7 @@ def build_app(inputs: BrokerInputs) -> Starlette:
 
     @asynccontextmanager
     async def lifespan(app: Starlette) -> AsyncIterator[None]:
-        async with manager.run():
+        async with client, manager.run():
             log.info(
                 "bugzilla broker ready on %s:%d (read-only)",
                 inputs.host,

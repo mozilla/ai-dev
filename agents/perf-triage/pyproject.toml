@@ -6,6 +6,7 @@ requires-python = ">=3.14"
 dependencies = [
     "hackbot-runtime[claude-sdk]",
     "agent-tools[bugzilla]",
+    "bugzilla-client",
     "claude-agent-sdk>=0.1.30",
     "mcp>=1.0.0",
     "pydantic>=2",
@@ -18,6 +19,7 @@ dev = ["pytest>=8.0.0", "pytest-asyncio>=0.23.0", "pyyaml>=6.0"]
 [tool.uv.sources]
 hackbot-runtime = { workspace = true }
 agent-tools = { workspace = true }
+bugzilla-client = { workspace = true }
 performance-triage-calculator = { git = "https://github.com/mozilla/performance-triage-calculator", rev = "53c8dcf4ab84750d6d9a423f90823b4e5275bfaa" }
 
 [build-system]

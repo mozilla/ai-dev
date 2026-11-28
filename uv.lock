@@ -74,8 +74,7 @@ dependencies = [
 
 [package.optional-dependencies]
 bugzilla = [
-    { name = "bugsy" },
-    { name = "six" },
+    { name = "bugzilla-client" },
 ]
 claude-sdk = [
     { name = "claude-agent-sdk" },
@@ -97,7 +96,7 @@ vcs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bugsy", marker = "extra == 'bugzilla'" },
+    { name = "bugzilla-client", marker = "extra == 'bugzilla'", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", marker = "extra == 'claude-sdk'", specifier = ">=0.1.30" },
     { name = "fastmcp", marker = "extra == 'mcp-server'", specifier = ">=3.4.0" },
     { name = "grizzly-framework", marker = "extra == 'firefox'" },
@@ -105,7 +104,6 @@ requires-dist = [
     { name = "prefpicker", marker = "extra == 'firefox'" },
     { name = "pydantic", specifier = ">=2.6.0" },
     { name = "searchfox", marker = "extra == 'searchfox'", specifier = ">=0.20.3" },
-    { name = "six", marker = "extra == 'bugzilla'" },
     { name = "uvicorn", marker = "extra == 'mcp-server'" },
 ]
 provides-extras = ["bugzilla", "firefox", "claude-sdk", "mcp-server", "searchfox", "vcs"]
@@ -883,18 +881,6 @@ requires-dist = [
     { name = "sentry-sdk", specifier = ">=2.60.0" },
 ]
 provides-extras = ["dev", "llms-txt"]
-
-[[package]]
-name = "bugsy"
-version = "0.12.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/d0/610e2f68f515238f98f920d9fe0a9b4bbc56436e6cfc64c5b64dc20b1459/bugsy-0.12.0.tar.gz", hash = "sha256:2d49af1cb4a2841e3d677ac535b054c51f457a5d124ad106c43a8fc3847fb26e", size = 17841, upload-time = "2020-07-13T18:47:24.272Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/e6/a99aa6ab1ae7842011ca6d50d159a5e5a500717d13fc2ae42f39131741e3/bugsy-0.12.0-py2.py3-none-any.whl", hash = "sha256:b5df82ff0e708cca73a517bfa80494a43b1b97267d5778a5cba62f7a9d04e9da", size = 27223, upload-time = "2020-07-13T18:47:23.232Z" },
-]
 
 [[package]]
 name = "bugzilla-client"
@@ -2382,7 +2368,7 @@ source = { editable = "agents/autowebcompat-diagnosis" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla"] },
     { name = "autowebcompat-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "mcp" },
@@ -2395,7 +2381,7 @@ dependencies = [
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla"], editable = "libs/agent-tools" },
     { name = "autowebcompat-tools", editable = "libs/autowebcompat-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.1.30" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2410,7 +2396,7 @@ source = { editable = "agents/autowebcompat-intervention" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla", "firefox"] },
     { name = "autowebcompat-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk", "phabricator"] },
     { name = "mcp" },
@@ -2430,7 +2416,7 @@ dev = [
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla", "firefox"], editable = "libs/agent-tools" },
     { name = "autowebcompat-tools", editable = "libs/autowebcompat-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.2.165" },
     { name = "hackbot-runtime", extras = ["claude-sdk", "phabricator"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2449,7 +2435,7 @@ source = { editable = "agents/autowebcompat-repro" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla"] },
     { name = "autowebcompat-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "mcp" },
@@ -2462,7 +2448,7 @@ dependencies = [
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla"], editable = "libs/agent-tools" },
     { name = "autowebcompat-tools", editable = "libs/autowebcompat-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.1.30" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2476,7 +2462,7 @@ name = "hackbot-agent-bug-fix"
 source = { editable = "agents/bug-fix" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla", "firefox"] },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk", "phabricator"] },
     { name = "mcp" },
@@ -2498,7 +2484,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla", "firefox"], editable = "libs/agent-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.1.30" },
     { name = "hackbot-runtime", extras = ["claude-sdk", "phabricator"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2517,7 +2503,7 @@ name = "hackbot-agent-build-repair"
 source = { editable = "agents/build-repair" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla", "firefox"] },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk", "phabricator"] },
     { name = "mcp" },
@@ -2536,7 +2522,7 @@ eval = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla", "firefox"], editable = "libs/agent-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.2.165" },
     { name = "hackbot-runtime", extras = ["claude-sdk", "phabricator"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2583,7 +2569,7 @@ name = "hackbot-agent-frontend-triage"
 source = { editable = "agents/frontend-triage" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla", "searchfox", "vcs"] },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "mcp" },
@@ -2600,7 +2586,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla", "searchfox", "vcs"], editable = "libs/agent-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.2.165" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2616,7 +2602,7 @@ name = "hackbot-agent-gecko-triage"
 source = { editable = "agents/gecko-triage" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla", "searchfox", "vcs"] },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "jinja2" },
@@ -2634,7 +2620,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla", "searchfox", "vcs"], editable = "libs/agent-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.2.165" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "jinja2", specifier = ">=3.1" },
@@ -2651,6 +2637,7 @@ name = "hackbot-agent-perf-triage"
 source = { editable = "agents/perf-triage" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla"] },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "mcp" },
@@ -2668,6 +2655,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla"], editable = "libs/agent-tools" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.1.30" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -2746,7 +2734,7 @@ name = "hackbot-agent-uplift-resolve"
 source = { editable = "agents/uplift-resolve" }
 dependencies = [
     { name = "agent-tools", extra = ["bugzilla", "searchfox", "vcs"] },
-    { name = "bugsy" },
+    { name = "bugzilla-client" },
     { name = "claude-agent-sdk" },
     { name = "hackbot-runtime", extra = ["claude-sdk"] },
     { name = "mcp" },
@@ -2766,7 +2754,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "agent-tools", extras = ["bugzilla", "searchfox", "vcs"], editable = "libs/agent-tools" },
-    { name = "bugsy" },
+    { name = "bugzilla-client", editable = "libs/bugzilla-client" },
     { name = "claude-agent-sdk", specifier = ">=0.1.30" },
     { name = "hackbot-runtime", extras = ["claude-sdk"], editable = "libs/hackbot-runtime" },
     { name = "mcp", specifier = ">=1.0.0" },
@@ -3082,8 +3070,8 @@ name = "httpcore2"
 version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "h11", marker = "sys_platform != 'emscripten'" },
-    { name = "truststore", marker = "sys_platform != 'emscripten'" },
+    { name = "h11" },
+    { name = "truststore" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c0/61/afa9d6b7452f9eca73f73d45324eb0bb52f098fd5e6049bf6b8263be9b4e/httpcore2-2.16.0.tar.gz", hash = "sha256:c72cd0413563b17e1cd8354677dff887466f8ec2551679759e93126534428643", size = 69886, upload-time = "2026-10-21T07:09:45.31Z" }
 wheels = [
@@ -6367,8 +6355,8 @@ name = "secretstorage"
 version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cryptography", marker = "sys_platform == 'linux'" },
-    { name = "jeepney", marker = "sys_platform == 'linux'" },
+    { name = "cryptography" },
+    { name = "jeepney" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1c/03/e834bcd866f2f8a49a85eaff47340affa3bfa391ee9912a952a1faa68c7b/secretstorage-3.5.0.tar.gz", hash = "sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be", size = 19884, upload-time = "2025-11-23T19:02:53.191Z" }
 wheels = [
@@ -6952,14 +6940,14 @@ resolution-markers = [
     "(platform_machine != 'x86_64' and sys_platform == 'darwin') or (sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'linux' and sys_platform != 'win32')",
 ]
 dependencies = [
-    { name = "filelock", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "fsspec", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "jinja2", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "networkx", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "filelock" },
+    { name = "fsspec" },
+    { name = "jinja2" },
+    { name = "networkx" },
     { name = "nvidia-nccl-cu13", marker = "sys_platform == 'never'" },
-    { name = "setuptools", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "sympy", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "typing-extensions", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "setuptools" },
+    { name = "sympy" },
+    { name = "typing-extensions" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8a/04/ff26bb464e61f83e0176deca01e72fffa779190bbb476011e89c45791589/torch-2.15.0-cp314-cp314-macosx_14_0_arm64.whl", hash = "sha256:0d2b2d9674fa0b9b3f50e83231aa6545a0b19e437a52f0af939a224faaa45515", size = 138575002, upload-time = "2026-10-28T15:17:58.526Z" },
@@ -6977,13 +6965,13 @@ resolution-markers = [
     "sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "filelock", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "fsspec", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "jinja2", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "networkx", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "setuptools", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "sympy", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "typing-extensions", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "filelock" },
+    { name = "fsspec" },
+    { name = "jinja2" },
+    { name = "networkx" },
+    { name = "setuptools" },
+    { name = "sympy" },
+    { name = "typing-extensions" },
 ]
 wheels = [
     { url = "https://download-r2.pytorch.org/whl/cpu/torch-2.15.0%2Bcpu-cp314-cp314-linux_s390x.whl", hash = "sha256:ef810702df4dd70fe1b8ebee9e7394c6491f779841571a71433829e44927eaa5", upload-time = "2026-10-28T13:19:19Z" },

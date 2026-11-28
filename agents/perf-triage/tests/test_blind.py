@@ -1,3 +1,4 @@
+from bugzilla_client import BugzillaClient, BugzillaSettings
 from hackbot_agents.perf_triage.blind import (
     BlindClient,
     find_cutoff,
@@ -137,13 +138,22 @@ class FakeClient:
         raise AssertionError(path)
 
 
-def test_the_client_hides_the_rating_the_calculator_comment_and_later_bugs():
-    blind = BlindClient(FakeClient(), 1)
-    assert blind.request("bug", {"id": "1,2"})["bugs"] == [
-        {
-            "id": 1,
-            "creation_time": "2025-01-01T00:00:00Z",
-            "cf_performance_impact": "---",
-        }
-    ]
-    assert len(blind.request("bug/1/comment")["bugs"]["1"]["comments"]) == 1
+async def test_the_client_hides_the_rating_the_calculator_comment_and_later_bugs(
+    monkeypatch,
+):
+    fake = FakeClient()
+
+    async def request(self, method, path, /, *, params=None, json=None):
+        return fake.request(path, params)
+
+    monkeypatch.setattr(BugzillaClient, "request", request)
+    async with BlindClient(BugzillaSettings(api_key="a" * 40), 1) as blind:
+        assert (await blind.bugs.get([1, 2])).data["bugs"] == [
+            {
+                "id": 1,
+                "creation_time": "2025-01-01T00:00:00Z",
+                "cf_performance_impact": "---",
+            }
+        ]
+        comments = (await blind.comments.get(bug_ids=[1])).data
+        assert len(comments["bugs"]["1"]["comments"]) == 1
