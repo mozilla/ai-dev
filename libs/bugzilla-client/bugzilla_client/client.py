@@ -1,7 +1,7 @@
 """Small shared Bugzilla REST client.
 
 A minimal ``httpx``-based client for the handful of calls hackbot makes, in
-place of the mix of ``requests``, raw ``httpx`` and ``bugsy`` used today. It
+place of the mix of ``requests`` and raw ``httpx`` used today. It
 deliberately avoids ``libmozdata``'s bulk, futures-oriented client, which suits
 the bugbug data pipelines but not single-bug reads and writes from an event
 loop.
